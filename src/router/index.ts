@@ -2,8 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
   {
+    name: 'Home',
     path: '/',
     component: () => import('/@/pages/Index.vue'),
+  },
+  {
+    name: 'Board',
+    path: '/board/:id',
+    component: () => import('/@/pages/Board.vue'),
   },
 ];
 
