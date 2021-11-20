@@ -4,10 +4,13 @@ import { useI18n } from 'vue-i18n';
 import { defineComponent, ref } from 'vue';
 import { useTheme } from '/@/composables';
 
+import { useStore } from '/@/store/counter.store';
+
 export default defineComponent({
   name: 'Home',
   setup() {
     const { t, availableLocales, locale } = useI18n();
+    const counter = useStore();
 
     const toggleLocales = () => {
       const locales = availableLocales;
@@ -23,7 +26,7 @@ export default defineComponent({
       show.value = true;
     }, 1000);
 
-    return { t, show, toggleLocales, toggleDark };
+    return { t, show, toggleLocales, toggleDark, counter };
   },
 });
 </script>
