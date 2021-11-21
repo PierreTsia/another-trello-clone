@@ -4,38 +4,65 @@ import { COLORS } from './src/styles/colors.constant';
 
 export default defineConfig({
   darkMode: 'class',
-  plugins: [typography()],
+  plugins: [
+    typography(),
+    // Other plugins
+    require('@windicss/plugin-animations')({
+      settings: {
+        animatedSpeed: 1000,
+        heartBeatSpeed: 1000,
+        hingeSpeed: 2000,
+        bounceInSpeed: 750,
+        bounceOutSpeed: 750,
+        animationDelaySpeed: 1000,
+      },
+    }),
+  ],
   theme: {
-    colors: {
-      ...COLORS,
+    extend: {
+      colors: {
+        ...COLORS,
+      },
+      backgroundColor: {
+        ...COLORS,
+      },
+      borderColor: {
+        ...COLORS,
+      },
+      placeholderColor: {
+        ...COLORS,
+      },
+      fontFamily: {
+        sans: [
+          'Segoe UI',
+          'Roboto',
+          'Noto Sans',
+          'Ubuntu',
+          'Droid Sans',
+          'Helvetica Neue',
+          'sans-serif',
+        ],
+        serif: ['Merriweather', 'serif'],
+
+        mono: ['Fira Sans', 'ui-monospace', 'SFMono-Regular'],
+      },
+      variants: {
+        ringColor: ['responsive', 'hover', 'focus', 'active'],
+        backgroundColor: [
+          'group-focus-within',
+          'group-focus-visible',
+          'group-active',
+          'group-visited',
+          'group-disabled',
+          'focus',
+          'group-focus',
+          'can-hover',
+          'no-hover',
+        ],
+        backdropOpacity: ['hover', 'focus'],
+      },
     },
-    backgroundColor: {
-      ...COLORS,
-    },
-    borderColor: {
-      ...COLORS,
-    },
-    placeholderColor: {
-      ...COLORS,
-    },
-    fontFamily: {
-      sans: ['Open Sans', 'ui-sans-serif', 'system-ui'],
-      serif: ['Montserrat', 'ui-serif', 'Georgia'],
-      mono: ['Fira Sans', 'ui-monospace', 'SFMono-Regular'],
-    },
-    variants: {
-      backgroundColor: [
-        'group-focus-within',
-        'group-focus-visible',
-        'group-active',
-        'group-visited',
-        'group-disabled',
-        'hocus',
-        'group-hocus',
-        'can-hover',
-        'no-hover',
-      ],
-    },
+
     plugins: [require('@windicss/plugin-interaction-variants')],
   },
 });

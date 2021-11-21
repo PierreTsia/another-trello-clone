@@ -10,7 +10,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="h-screen w-full bg-blue">
+  <div class="h-screen w-full bg-blue font-sans">
     <TopBar />
     <slot />
   </div>

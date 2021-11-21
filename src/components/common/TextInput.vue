@@ -57,32 +57,36 @@ export default defineComponent({
         items-center
         justify-center
         w-8
-        pl-3
-        py-3
-        top-1
+        py-1
+        bottom-0.5
       "
       :class="{
         'text-grey-dark': textColor === colors.GreyDark,
         'text-white': textColor === colors.White,
       }"
     >
-      <Icon :icon="icon" :color="textColor" :rotate="rotateIcon ? 1 : 0" />
+      <Icon
+        :icon="icon"
+        :color="textColor"
+        height="12"
+        :rotate="rotateIcon ? 1 : 0"
+      />
     </span>
     <input
       type="text"
       :placeholder="placeholder"
       class="
-        px-3
-        py-3
+        px-1
+        py-1
         relative
         bg-transparent
         rounded
-        text-sm
+        text-xs
         border
         outline-none
         focus:outline-none focus:ring
         w-full
-        pl-10
+        pl-8
       "
       :class="{
         'border-grey-dark': textColor === colors.GreyDark,

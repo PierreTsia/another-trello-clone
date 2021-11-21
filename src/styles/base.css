@@ -1,3 +1,19 @@
 input {
   background-color: transparent;
 }
+
+.separator {
+  @apply h-4 mx-2 border-r text-sm self-center;
+}
+
+.separator-blue-light {
+  @apply border-blue-light;
+}
+
+.tag {
+  @apply rounded-lg  text-xs px-2 py-1;
+}
+
+.tag-blue-light {
+  @apply bg-blue-light;
+}
