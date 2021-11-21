@@ -10,6 +10,10 @@ export default defineComponent({
       type: String,
       default: ColorName.Blue,
     },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
     isSmall: {
       type: Boolean,
       default: false,
@@ -17,6 +21,10 @@ export default defineComponent({
     textColor: {
       type: String,
       default: ColorName.White,
+    },
+    fontBold: {
+      type: Boolean,
+      default: true,
     },
   },
   setup() {
@@ -33,6 +41,8 @@ export default defineComponent({
     class="btn btn-rounded"
     :class="{
       'p-2': !isSmall,
+      'btn-disabled': isDisabled,
+      'font-bold': fontBold,
       'bg-grey-light': color === colorName.GreyLight,
       'hover:bg-grey': color === colorName.GreyLight,
       'btn-blue': color === colorName.Blue,
@@ -49,8 +59,12 @@ export default defineComponent({
 
 <style>
 .btn {
-  @apply font-bold text-sm flex justify-items-center items-center;
+  @apply text-sm flex justify-items-center items-center;
 }
+.btn-disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
 .btn-rounded {
   @apply rounded focus:ring-0 focus:outline-none;
 }

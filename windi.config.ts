@@ -9,12 +9,13 @@ export default defineConfig({
     // Other plugins
     require('@windicss/plugin-animations')({
       settings: {
-        animatedSpeed: 1000,
+       /* animatedSpeed: 500,
         heartBeatSpeed: 1000,
         hingeSpeed: 2000,
         bounceInSpeed: 750,
+        slideInSpeed: 350,
         bounceOutSpeed: 750,
-        animationDelaySpeed: 1000,
+        animationDelaySpeed: 1000,*/
       },
     }),
   ],

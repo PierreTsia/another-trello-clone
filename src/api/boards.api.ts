@@ -1,9 +1,9 @@
-interface Block {
+export interface Block {
   _id: string;
   label: string;
 }
 
-interface List {
+export interface List {
   _id: string;
   label: string;
   blocks: Block[];
@@ -22,34 +22,7 @@ const MOCK_BLOCKS: Block[] = [
     label:
       "Ceci est une carte. Faites la glisser vers « Trucs Essayés » pour montrer que c'est terminé.",
   },
-  {
-    _id: 'block_2',
-    label: 'Block 2',
-  },
-  {
-    _id: 'block_3',
-    label: 'Block 3',
-  },
-  {
-    _id: 'block_4',
-    label: 'Block 4',
-  },
-  {
-    _id: 'block_5',
-    label: 'Block 5',
-  },
-  {
-    _id: 'block_6',
-    label: 'Block 6',
-  },
-  {
-    _id: 'block_7',
-    label: 'Block 7',
-  },
-  {
-    _id: 'block_8',
-    label: 'Block 8',
-  },
+
 ];
 
 const MOCK_BOARDS: Board[] = [

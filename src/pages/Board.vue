@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onBeforeMount } from 'vue';
+import { defineComponent, onBeforeMount, ref } from 'vue';
 
 import Dashboard from '/@/layouts/Dashboard.vue';
 import ListContainer from '/@/components/common/ListContainer.vue';
@@ -8,6 +8,7 @@ import DropDown from '/@/components/common/DropDown.vue';
 import ContextualMenu from '/@/components/common/ContextualMenu.vue';
 import Button from '/@/components/common/Button.vue';
 import BlockCard from '/@/components/common/BlockCard.vue';
+import CreateBlockInput from '/@/components/CreateBlockInput.vue';
 import { Icon } from '@iconify/vue';
 import { useBoards } from '/@/store/boards.store';
 import { useRoute } from 'vue-router';
@@ -25,13 +26,44 @@ export default defineComponent({
     Button,
     ContextualMenu,
     BlockCard,
+    CreateBlockInput,
   },
   setup() {
     const boardsStore = useBoards();
+    const { saveBlock, fetchBoard } = boardsStore;
     const route = useRoute();
     const { colorValues, colorName } = useColors();
+
+    const isEditMode = (listId: string) => {
+      return draftBlock.value && draftBlock.value?.listId === listId;
+    };
+
+    const insertBlock = () => {
+      if (!draftBlock.value) return;
+      saveBlock(draftBlock.value);
+      draftBlock.value = null;
+    };
+
+    const canValidate = (listId: string) => {
+      return !!(isEditMode(listId) && draftBlock.value?.label?.length);
+    };
+    const draftBlock = ref<{ listId: string; label: string } | null>(null);
+    const createDraftBlock = (listId: string) => {
+      draftBlock.value = {
+        listId,
+        label: '',
+      };
+    };
+
+    const editDraftBlock = (content: string) => {
+      console.log('coucou');
+      if (draftBlock.value) {
+        draftBlock.value.label = content;
+      }
+    };
+
     onBeforeMount(() => {
-      boardsStore.fetchBoard(route.params.id as string);
+      fetchBoard(route.params.id as string);
     });
 
     const listMenuItems = [
@@ -51,18 +83,39 @@ export default defineComponent({
 
     const { board } = storeToRefs(boardsStore);
 
-    return { board, colorName, colorValues, listMenuItems };
+    return {
+      board,
+      colorName,
+      colorValues,
+      listMenuItems,
+      draftBlock,
+      createDraftBlock,
+      isEditMode,
+      editDraftBlock,
+      canValidate,
+      insertBlock,
+    };
   },
 });
 </script>
+
 <template>
   <Dashboard>
     <div
       id="board-container"
       v-if="board"
-      class="flex px-4 pb-8 items-start overflow-x-scroll"
+      class="h-full flex px-4 pb-8 items-start overflow-x-scroll"
     >
-      <ListContainer v-for="list in board.lists" :list="list" :key="list.id">
+      <ListContainer
+        v-for="list in board.lists"
+        :list="list"
+        :key="list.id"
+        :is-edit-mode="isEditMode(list._id)"
+        :can-validate="canValidate(list._id)"
+        @onCreateNewClick="createDraftBlock"
+        @onCancel="draftBlock = null"
+        @onValidate="insertBlock"
+      >
         <template v-slot:header>
           <h3 class="text-sm font-bold">{{ list.label }}</h3>
 
@@ -88,7 +141,11 @@ export default defineComponent({
             v-for="(block, blockIndex) in list.blocks"
             :block="block"
             :key="`block__${blockIndex}`"
-          ></BlockCard>
+          />
+          <CreateBlockInput
+            v-if="isEditMode(list._id)"
+            @onChange="editDraftBlock"
+          />
         </template>
       </ListContainer>
     </div>
