@@ -11,9 +11,11 @@ import BlockCard from '/@/components/common/BlockCard.vue';
 import CreateBlockInput from '/@/components/CreateBlockInput.vue';
 import { Icon } from '@iconify/vue';
 import { useBoards } from '/@/store/boards.store';
+import { useAuth } from '/@/store/auth.store';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useColors } from '/@/composables/useColors';
+import { useModal, ModalName } from '/@/store/modal.store';
 
 export default defineComponent({
   name: 'Board',
@@ -31,8 +33,24 @@ export default defineComponent({
   setup() {
     const boardsStore = useBoards();
     const { saveBlock, fetchBoard } = boardsStore;
+
+    const { getCurrentUser, login } = useAuth();
+
     const route = useRoute();
     const { colorValues, colorName } = useColors();
+
+    const { openModal, closeModal } = useModal();
+
+    const openEditBlockModal = (block: any) => {
+      openModal(ModalName.EditBlock, {
+        payload: block,
+        onConfirm: () => {
+          console.log('coucou');
+          closeModal();
+        },
+        onCancel: closeModal,
+      });
+    };
 
     const isEditMode = (listId: string) => {
       return draftBlock.value && draftBlock.value?.listId === listId;
@@ -63,7 +81,10 @@ export default defineComponent({
     };
 
     onBeforeMount(() => {
-      fetchBoard(route.params.id as string);
+      //fetchBoards();
+      //login('pierre.tsiakkaros+admin@gmail.com', 'Kuro55an');
+      fetchBoard(+route.params.id);
+      getCurrentUser();
     });
 
     const listMenuItems = [
@@ -94,6 +115,7 @@ export default defineComponent({
       editDraftBlock,
       canValidate,
       insertBlock,
+      openEditBlockModal,
     };
   },
 });
@@ -141,6 +163,7 @@ export default defineComponent({
             v-for="(block, blockIndex) in list.blocks"
             :block="block"
             :key="`block__${blockIndex}`"
+            @click.native="openEditBlockModal(block)"
           />
           <CreateBlockInput
             v-if="isEditMode(list._id)"

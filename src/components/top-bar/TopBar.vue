@@ -27,9 +27,9 @@ export default defineComponent({
 <template>
   <div>
     <Navbar />
-    <div class="flex items-center m-4 justify-between">
+    <div class="flex-wrap flex items-center m-4 justify-between">
       <div class="flex items-center">
-        <Button color="blue-light" class="h-9 mr-2">
+        <Button color="blue-light" class="h-9 mr-2 mb-2 md:mb-0">
           <h3 class="text-white text-sm font-bold text-center px-2">
             Nom du Tableau
           </h3>
@@ -37,7 +37,7 @@ export default defineComponent({
 
         <ul class="list-reset text-white hidden md:flex">
           <li class="mr-2">
-            <Button color="blue-light" class="h-9 w-9"
+            <Button color="blue-light" class="h-9 w-9 mb-2 md:mb-0"
               ><Icon
                 icon="akar-icons:star"
                 color="white"
@@ -48,7 +48,7 @@ export default defineComponent({
           </li>
 
           <li class="">
-            <Button color="blue-light" class="h-9"
+            <Button color="blue-light" class="h-9 mb-2 md:mb-0"
               ><Icon
                 icon="fa-solid:lock"
                 color="white"
@@ -61,13 +61,13 @@ export default defineComponent({
 
           <li class="separator separator-blue-light" />
 
-          <li class="flex items-center">
+          <li class="flex items-center mb-2 md:mb-0">
             <span class="text-sm">Abonnement: </span>
             <span class="tag tag-blue-light ml-2">Free</span>
           </li>
           <li class="separator separator-blue-light" />
           <li class="">
-            <Button color="blue-darker" class="h-9"
+            <Button color="blue-darker" class="h-9 mb-2 md:mb-0"
               ><Icon
                 icon="bx:bx-user-plus"
                 color="white"
@@ -79,9 +79,9 @@ export default defineComponent({
           </li>
         </ul>
       </div>
-      <ul class="flex">
+      <ul class="flex flex-wrap">
         <li>
-          <Button color="blue-light">
+          <Button color="blue-light" class='mb-2 md:mb-0'>
             <Icon
               icon="bi:lightning-charge-fill"
               color="white"
@@ -93,13 +93,13 @@ export default defineComponent({
         </li>
         <li class="separator separator-blue-light" />
         <li class="mr-2">
-          <Button color="blue-light">
+          <Button color="blue-light" class='mb-2 md:mb-0'>
             <Icon icon="bi:filter" color="white" height="16" class="mr-2" />
             <p class="text-white text-center">Filtre</p>
           </Button>
         </li>
         <li>
-          <Button color="blue-light">
+          <Button color="blue-light" class='mb-2 md:mb-0'>
             <Icon icon="bi:three-dots" color="white" height="16" class="mr-2" />
             <p class="text-white text-center">Afficher le menu</p>
           </Button>

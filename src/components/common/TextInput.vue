@@ -48,7 +48,6 @@ export default defineComponent({
         h-full
         leading-snug
         font-normal
-        absolute
         text-center
         absolute
         bg-transparent
@@ -56,19 +55,20 @@ export default defineComponent({
         text-base
         items-center
         justify-center
-        w-8
-        py-1
-        bottom-0.5
+        w-6
+        pt-2
+        px-2
       "
       :class="{
         'text-grey-dark': textColor === colors.GreyDark,
         'text-white': textColor === colors.White,
       }"
     >
+
       <Icon
         :icon="icon"
         :color="textColor"
-        height="12"
+        height="10"
         :rotate="rotateIcon ? 1 : 0"
       />
     </span>
@@ -86,7 +86,7 @@ export default defineComponent({
         outline-none
         focus:outline-none focus:ring
         w-full
-        pl-8
+        pl-6
       "
       :class="{
         'border-grey-dark': textColor === colors.GreyDark,

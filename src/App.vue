@@ -1,4 +1,5 @@
 <script lang="ts">
+import 'reflect-metadata';
 import { defineComponent } from 'vue';
 
 export default defineComponent({

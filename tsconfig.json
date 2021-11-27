@@ -9,8 +9,15 @@
     "sourceMap": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "lib": ["esnext", "dom"],
-    "types": ["vite/client", "node", "@intlify/vite-plugin-vue-i18n/client", "jest"],
+    "types": [
+      "vite/client",
+      "node",
+      "@intlify/vite-plugin-vue-i18n/client",
+      "jest"
+    ],
     "incremental": false,
     "skipLibCheck": true,
     "noUnusedLocals": true,

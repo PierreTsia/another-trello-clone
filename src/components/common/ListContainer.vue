@@ -59,7 +59,7 @@ export default defineComponent({
         <Button
           color="grey-light"
           :font-bold="false"
-          class="w-48"
+          class="w-48 text-grey-dark hover:text-grey-light"
           @click.native="$emit('onCreateNewClick', list._id)"
         >
           <Icon
@@ -67,7 +67,7 @@ export default defineComponent({
             class="mr-1"
             :color="colorValues['grey-dark']"
           />
-          <p class="text-grey-dark">Ajouter une carte</p>
+          <p class="">Ajouter une carte</p>
         </Button>
       </div>
     </div>

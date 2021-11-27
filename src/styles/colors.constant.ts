@@ -17,17 +17,17 @@ export enum ColorName {
 
 export const COLORS = {
   [ColorName.Blue]: '#2079BF',
+  [ColorName.BlueLight]: '#4DA2D3',
+  [ColorName.BlueLighter]: '#8ad4fc',
   [ColorName.BlueDark]: '#0D4369',
   [ColorName.BlueDarker]: '#063249',
   [ColorName.BlueGrey]: '#527C97',
-  [ColorName.BlueLight]: '#4DA2D3',
-  [ColorName.BlueLighter]: '#8ad4fc',
   [ColorName.Red]: '#E3342F',
   [ColorName.RedLight]: '#ed7876',
   [ColorName.RedDark]: '#bf1715',
   [ColorName.White]: '#FFFFFF',
   [ColorName.Grey]: '#9babb4',
-  [ColorName.GreyDark]: '#172b4d',
-  [ColorName.GreyLight]: '#DAE4E9',
-  [ColorName.GreyLighter]: '#f3f7f9',
+  [ColorName.GreyLight]: '#E5E7EB',
+  [ColorName.GreyLighter]: '#F3F4F6',
+  [ColorName.GreyDark]: '#4B5563',
 };

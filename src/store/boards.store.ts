@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
-import { getBoards, getBoardById, List } from '/@/api/boards.api';
+import { BoardService } from '/@/api/services/board.service';
+import { BoardDto } from '/@/types/board.dto';
 
 interface BoardState {
-  boards: any[];
-  board: any;
+  boards: BoardDto[];
+  board: BoardDto | null;
 }
 
 export const useBoards = defineStore('boards', {
@@ -16,19 +17,14 @@ export const useBoards = defineStore('boards', {
 
   actions: {
     async fetchBoards() {
-      this.boards = await getBoards();
+      const api = BoardService.getInstance();
+      this.boards = await api.getBoards();
     },
-    async fetchBoard(boardId: string) {
-      this.board = await getBoardById(boardId);
+    async fetchBoard(boardId: number) {
+      const api = BoardService.getInstance();
+      this.board = await api.getBoard(boardId);
     },
 
-    async saveBlock(block: { listId: string; label: string }) {
-      const listToUpdate = this.board.lists.find(
-        (list: List) => list._id === block.listId,
-      );
-      if (listToUpdate) {
-        listToUpdate.blocks.push(block);
-      }
-    },
+    async saveBlock(block: { listId: string; label: string }) {},
   },
 });

@@ -9,13 +9,13 @@ export default defineConfig({
     // Other plugins
     require('@windicss/plugin-animations')({
       settings: {
-       /* animatedSpeed: 500,
+        animatedSpeed: 500,
         heartBeatSpeed: 1000,
         hingeSpeed: 2000,
         bounceInSpeed: 750,
         slideInSpeed: 350,
         bounceOutSpeed: 750,
-        animationDelaySpeed: 1000,*/
+        animationDelaySpeed: 1000,
       },
     }),
   ],
@@ -50,6 +50,17 @@ export default defineConfig({
       variants: {
         ringColor: ['responsive', 'hover', 'focus', 'active'],
         backgroundColor: [
+          'group-focus-within',
+          'group-focus-visible',
+          'group-active',
+          'group-visited',
+          'group-disabled',
+          'focus',
+          'group-focus',
+          'can-hover',
+          'no-hover',
+        ],
+        text: [
           'group-focus-within',
           'group-focus-visible',
           'group-active',

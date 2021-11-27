@@ -12,7 +12,7 @@ export default defineComponent({
   },
   setup: () => {
     const { t } = useI18n();
-    
+
     return { t };
   },
 });
@@ -50,7 +50,7 @@ export default defineComponent({
 
 <style scoped>
 a {
-  @apply text-cyan-400 hover:text-cyan-500 transition-all ease-out duration-100;
+  @apply text-pink-400 hover:text-cyan-500 transition-all ease-out duration-100;
 }
 </style>
 
