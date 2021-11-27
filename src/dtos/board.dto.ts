@@ -1,6 +1,6 @@
 import { Expose, Transform, Type } from 'class-transformer';
 import { UserDto } from '/@/dtos/index.dto';
-import { stringToDate, slugify } from '../../helpers/index.helpers';
+import { stringToDate, slugify } from '../helpers/index.helpers';
 import { ListDto } from '/@/dtos/list.dto';
 
 export class BoardDto {
@@ -32,6 +32,8 @@ export class BoardDto {
   @Expose()
   @Type(() => ListDto)
   lists!: ListDto[];
+
+
 }
 
 export class CreateBoardDto {

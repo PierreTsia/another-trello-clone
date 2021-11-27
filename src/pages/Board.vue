@@ -16,7 +16,6 @@ import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useColors } from '/@/composables/useColors';
 import { useModal, ModalName } from '/@/store/modal.store';
-import { BoardService } from '/@/api/services/board.service';
 
 export default defineComponent({
   name: 'Board',
@@ -33,11 +32,10 @@ export default defineComponent({
   },
   setup() {
     const boardsStore = useBoards();
-    const { createBoard, fetchBoard, fetchBoardLists } = boardsStore;
+    const { fetchBoard, fetchBoardLists } = boardsStore;
 
     const authStore = useAuth();
     const { getCurrentUser } = authStore;
-    const { me } = storeToRefs(authStore);
 
     const route = useRoute();
     const { colorValues, colorName } = useColors();
@@ -55,8 +53,13 @@ export default defineComponent({
       });
     };
 
-    const isEditMode = (listId: string) => {
-      return draftBlock.value && draftBlock.value?.listId === listId;
+    const isEditMode = (listId?: number): boolean => {
+      return !!(
+        listId &&
+        listId > 0 &&
+        draftBlock.value &&
+        draftBlock.value?.listId === listId
+      );
     };
 
     const insertBlock = () => {
@@ -64,34 +67,22 @@ export default defineComponent({
       draftBlock.value = null;
     };
 
-    const canValidate = (listId: string) => {
+    const canValidate = (listId: number) => {
       return !!(isEditMode(listId) && draftBlock.value?.label?.length);
     };
-    const draftBlock = ref<{ listId: string; label: string } | null>(null);
-    const createDraftBlock = (listId: string) => {
-      draftBlock.value = {
-        listId,
-        label: '',
-      };
-    };
+    const draftBlock = ref<{ listId: number; label: string } | null>(null);
+    const createDraftBlock = (listId: number) => {};
 
     const editDraftBlock = (content: string) => {
-      console.log('coucou');
       if (draftBlock.value) {
         draftBlock.value.label = content;
       }
     };
 
     onBeforeMount(async () => {
-      //fetchBoards();
-      //login('pierre.tsiakkaros+admin@gmail.com', 'Kuro55an');
       fetchBoard(+route.params.id);
       fetchBoardLists(+route.params.id);
       getCurrentUser();
-      await createBoard(
-        'Est ce que cette fois je vais avoir un slug ? boarde de merde',
-        me.value?.id!,
-      );
     });
 
     const listMenuItems = [
@@ -139,14 +130,14 @@ export default defineComponent({
         v-for="list in board.lists"
         :list="list"
         :key="list.id"
-        :is-edit-mode="isEditMode(list._id)"
-        :can-validate="canValidate(list._id)"
+        :is-edit-mode="isEditMode(list.id)"
+        :can-validate="canValidate(list.id)"
         @onCreateNewClick="createDraftBlock"
         @onCancel="draftBlock = null"
         @onValidate="insertBlock"
       >
         <template v-slot:header>
-          <h3 class="text-sm font-bold">{{ list.label }}</h3>
+          <h3 class="text-sm font-bold">{{ list.name }}</h3>
 
           <DropDown ref="dropDownRef">
             <template v-slot:activator>
@@ -167,13 +158,13 @@ export default defineComponent({
 
         <template v-slot:blocks>
           <BlockCard
-            v-for="(block, blockIndex) in list.blocks"
+            v-for="(block, blockIndex) in list.cards"
             :block="block"
             :key="`block__${blockIndex}`"
             @click.native="openEditBlockModal(block)"
           />
           <CreateBlockInput
-            v-if="isEditMode(list._id)"
+            v-if="isEditMode(list.id)"
             @onChange="editDraftBlock"
           />
         </template>

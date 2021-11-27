@@ -1,5 +1,5 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { stringToDate } from '../../helpers/index.helpers';
+import { stringToDate } from '../helpers/index.helpers';
 
 export class UserDto {
   @Expose()

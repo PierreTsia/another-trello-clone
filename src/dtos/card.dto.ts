@@ -1,7 +1,7 @@
 import { Expose, Transform } from 'class-transformer';
 import { stringToDate, stringToNum } from '../helpers/index.helpers';
 
-export class ListDto {
+export class Card {
   @Expose()
   id!: number;
 

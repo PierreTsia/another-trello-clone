@@ -70,7 +70,7 @@ export default defineComponent({
           <li class="cursor-pointer text-2xl">
             <a
               href="#"
-              @click="toggleDark"
+              @click="toggleDark()"
               class="text-cyan-700 hover:text-cyan-500"
               :title="t('toggle_theme')"
             >
