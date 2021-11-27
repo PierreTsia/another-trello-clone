@@ -1,7 +1,7 @@
 import { HttpClient } from '/@/api/http.client';
-import { UserDto } from '/@/types/user.dto';
+import { UserDto } from '/@/dtos/user.dto';
 import { plainToClass } from 'class-transformer';
-import { AuthPayloadDto } from '/@/types/auth-payload.dto';
+import { AuthPayloadDto } from '/@/dtos/auth-payload.dto';
 interface Credentials {
   email: string;
   password: string;

@@ -1,5 +1,5 @@
 import { Expose, Transform, Type } from 'class-transformer';
-export const toDate = ({ value }: { value: string }) => new Date(value);
+import { stringToDate } from '../../helpers/index.helpers';
 
 export class UserDto {
   @Expose()
@@ -9,7 +9,7 @@ export class UserDto {
   confirmed!: boolean;
 
   @Expose()
-  @Transform(toDate)
+  @Transform(stringToDate)
   created_at!: Date;
 
   @Expose()
@@ -23,7 +23,7 @@ export class UserDto {
   role!: Role;
 
   @Expose()
-  @Transform(toDate)
+  @Transform(stringToDate)
   updated_at!: Date;
 
   @Expose()

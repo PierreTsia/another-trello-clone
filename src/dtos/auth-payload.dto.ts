@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { UserDto } from '/@/types/index.dto';
+import { UserDto } from '/@/dtos/index.dto';
 
 export class AuthPayloadDto {
   @Expose()

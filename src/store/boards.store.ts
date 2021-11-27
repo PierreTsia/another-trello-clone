@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { BoardService } from '/@/api/services/board.service';
-import { BoardDto } from '/@/types/board.dto';
+import { BoardDto } from '/@/dtos/board.dto';
+
 
 interface BoardState {
   boards: BoardDto[];
@@ -24,7 +25,18 @@ export const useBoards = defineStore('boards', {
       const api = BoardService.getInstance();
       this.board = await api.getBoard(boardId);
     },
+    async fetchBoardLists(boardId: number) {
+      const api = BoardService.getInstance();
+      const lists = await api.getListsByBoardId(boardId);
+      if (this.board?.id === boardId) {
+        this.board.lists = lists;
+      }
+    },
 
-    async saveBlock(block: { listId: string; label: string }) {},
+    async createBoard(boardName: string, userId: number) {
+      const api = BoardService.getInstance();
+      const board = await api.createBoard(boardName, userId);
+      this.boards.push(board);
+    },
   },
 });

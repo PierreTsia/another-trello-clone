@@ -16,6 +16,7 @@ import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useColors } from '/@/composables/useColors';
 import { useModal, ModalName } from '/@/store/modal.store';
+import { BoardService } from '/@/api/services/board.service';
 
 export default defineComponent({
   name: 'Board',
@@ -32,9 +33,11 @@ export default defineComponent({
   },
   setup() {
     const boardsStore = useBoards();
-    const { saveBlock, fetchBoard } = boardsStore;
+    const { createBoard, fetchBoard, fetchBoardLists } = boardsStore;
 
-    const { getCurrentUser, login } = useAuth();
+    const authStore = useAuth();
+    const { getCurrentUser } = authStore;
+    const { me } = storeToRefs(authStore);
 
     const route = useRoute();
     const { colorValues, colorName } = useColors();
@@ -58,7 +61,6 @@ export default defineComponent({
 
     const insertBlock = () => {
       if (!draftBlock.value) return;
-      saveBlock(draftBlock.value);
       draftBlock.value = null;
     };
 
@@ -80,11 +82,16 @@ export default defineComponent({
       }
     };
 
-    onBeforeMount(() => {
+    onBeforeMount(async () => {
       //fetchBoards();
       //login('pierre.tsiakkaros+admin@gmail.com', 'Kuro55an');
       fetchBoard(+route.params.id);
+      fetchBoardLists(+route.params.id);
       getCurrentUser();
+      await createBoard(
+        'Est ce que cette fois je vais avoir un slug ? boarde de merde',
+        me.value?.id!,
+      );
     });
 
     const listMenuItems = [

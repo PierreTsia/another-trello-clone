@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { AuthService } from '/@/api/services/auth.service';
-import { UserDto } from '/@/types/index.dto';
+import { UserDto } from '/@/dtos/index.dto';
 
 interface AuthState {
   user: UserDto | null;
