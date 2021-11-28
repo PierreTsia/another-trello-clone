@@ -27,10 +27,8 @@ export const Router = createRouter({
 Router.beforeResolve(async (to, from, next) => {
   const authStore = useAuth();
   const { isLoggedIn } = storeToRefs(authStore);
-  console.log('isLoggedIn', isLoggedIn.value);
+  await authStore.getCurrentUser();
   if (to.meta.requiresAuth && !isLoggedIn.value) {
-    console.log('requires auth');
-    await authStore.getCurrentUser();
     return isLoggedIn.value ? next() : next('/');
   }
 

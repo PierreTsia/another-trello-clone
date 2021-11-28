@@ -7,8 +7,8 @@ import TextInput from '/@/components/common/TextInput.vue';
 import DropDown from '/@/components/common/DropDown.vue';
 import ContextualMenu from '/@/components/common/ContextualMenu.vue';
 import Button from '/@/components/common/Button.vue';
-import BlockCard from '/@/components/common/BlockCard.vue';
-import CreateBlockInput from '/@/components/CreateBlockInput.vue';
+import CardItem from '/@/components/common/CardItem.vue';
+import CreateCardInput from '/@/components/CreateCardInput.vue';
 import { Icon } from '@iconify/vue';
 import { useBoards } from '/@/store/boards.store';
 import { useAuth } from '/@/store/auth.store';
@@ -27,8 +27,8 @@ export default defineComponent({
     DropDown,
     Button,
     ContextualMenu,
-    BlockCard,
-    CreateBlockInput,
+    CardItem,
+    CreateCardInput,
   },
   setup() {
     const boardsStore = useBoards();
@@ -54,12 +54,7 @@ export default defineComponent({
     };
 
     const isEditMode = (listId?: number): boolean => {
-      return !!(
-        listId &&
-        listId > 0 &&
-        draftBlock.value &&
-        draftBlock.value?.listId === listId
-      );
+      return !!(draftBlock.value && draftBlock.value?.listId === listId);
     };
 
     const insertBlock = () => {
@@ -157,13 +152,13 @@ export default defineComponent({
         </template>
 
         <template v-slot:blocks>
-          <BlockCard
-            v-for="(block, blockIndex) in list.cards"
-            :block="block"
-            :key="`block__${blockIndex}`"
-            @click.native="openEditBlockModal(block)"
+          <CardItem
+            v-for="(card, cardIndex) in list.cards"
+            :card="card"
+            :key="`card__${cardIndex}`"
+            @click.native="openEditBlockModal(card)"
           />
-          <CreateBlockInput
+          <CreateCardInput
             v-if="isEditMode(list.id)"
             @onChange="editDraftBlock"
           />

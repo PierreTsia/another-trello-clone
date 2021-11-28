@@ -2,9 +2,9 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'BlockCard',
+  name: 'CardItem',
   props: {
-    block: { type: Object, default: () => ({ label: '' }) },
+    card: { type: Object, default: () => ({ name: '' }) },
     animateDirection: { type: String, default: 'up' },
   },
 });
@@ -28,6 +28,6 @@ export default defineComponent({
       'animate-slideInUp': animateDirection === 'up',
     }"
   >
-    {{ block.label }}
+    {{ card.name }}
   </div>
 </template>

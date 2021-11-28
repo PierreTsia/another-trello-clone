@@ -28,6 +28,22 @@ export class UserDto {
 
   @Expose()
   username!: string;
+
+  @Expose()
+  @Type(() => AvatarDto)
+  avatar!: AvatarDto;
+}
+
+export class AvatarDto {
+  @Expose()
+  id!: number;
+
+  @Expose()
+  url!: string;
+
+  @Expose({ name: 'formats' })
+  @Transform(({ value }) => value.thumbnail.url)
+  thumbnail!: string;
 }
 
 class Role {

@@ -2,7 +2,7 @@
 import { defineComponent, ref, watch } from 'vue';
 
 export default defineComponent({
-  name: 'CreateBlockInput',
+  name: 'CreateCardInput',
   setup(props, { emit }) {
     const label = ref('');
     watch(label, newLabel => {

@@ -24,13 +24,19 @@ export const useAuth = defineStore('auth', {
     async getCurrentUser() {
       const api = AuthService.getInstance();
       if (!api.hasToken()) return;
-      this.user = await api.me();
+      const me = await api.me();
+      this.user = await api.findUserBydId(me.id);
     },
     async login(email: string, password: string): Promise<any> {
       const api = AuthService.getInstance();
       const { user, jwt } = await api.login({ email, password });
       api.setCookieToken(jwt);
       this.user = user;
+    },
+    async logout() {
+      const api = AuthService.getInstance();
+      api.setCookieToken(null);
+      this.user = null;
     },
   },
 });

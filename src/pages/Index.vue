@@ -1,117 +1,57 @@
 <script lang="ts">
-import { useI18n } from 'vue-i18n';
-
 import { defineComponent, ref } from 'vue';
-import { useSettings } from '/@/store/settings.store';
+import { useAuth } from '/@/store/auth.store';
 import { storeToRefs } from 'pinia';
+
+import LoginCard from '/@/components/LoginCard.vue';
+import UserCard from '/@/components/UserCard.vue';
+import Footer from '/@/components/Footer.vue';
 
 export default defineComponent({
   name: 'Home',
+  components: {
+    LoginCard,
+    UserCard,
+    Footer,
+  },
   setup() {
-    const { t, availableLocales, locale } = useI18n();
-    const settings = useSettings();
-    const { toggleDark } = settings;
-    const { isDark } = storeToRefs(settings);
-
-    const toggleLocales = () => {
-      const locales = availableLocales;
-      locale.value =
-        locales[(locales.indexOf(locale.value) + 1) % locales.length];
-    };
+    const auth = useAuth();
+    const { isLoggedIn, me } = storeToRefs(auth);
 
     const show = ref(false);
-
     setTimeout(() => {
       show.value = true;
     }, 1000);
 
-    return { t, show, toggleLocales, toggleDark, isDark };
+    return { show, isLoggedIn, me };
   },
 });
 </script>
 <template>
-  <div class="min-h-screen w-full flex items-center justify-center bg-white dark:bg-grey-dark">
-    <div class="container mx-auto mt-60">
-      <div class="h-60 mb-8">
+  <div
+    class="
+      min-h-screen
+      w-full
+      flex
+      items-center
+      justify-center
+      bg-indigo-50
+      dark:bg-gray-900
+    "
+  >
+    <div class="container min-h-screen flex flex-col justify-around mx-auto">
+      <div class="mb-8 h-78 flex items-center flex-1">
         <transition
           enter-active-class="transition ease-out duration-1000 transform"
           enter-from-class="-translate-x-100 opacity-0"
           enter-to-class="translate-x-0 opacity-100"
-          leave-active-class="transition ease-in duration-1000 transform"
-          leave-from-class="opacity-100"
-          leave-to-class="opacity-0"
         >
-          <img
-            v-if="show"
-            alt="Vitesome logo"
-            class="w-52 mx-auto mb-12"
-            :src="'imagotype.svg'"
-          />
+          <UserCard v-if="show && me" :user="me" />
         </transition>
+
+        <LoginCard v-if="!isLoggedIn" />
       </div>
-
-      <HelloWorld :msg="t('hello') + ' 👋 ' + t('welcome')" />
-
-      <footer class="text-center">
-        <ul class="flex justify-between w-1/3 mx-auto mb-8">
-          <li class="cursor-pointer text-2xl">
-            <a
-              href="#"
-              @click="toggleLocales"
-              class="footer-link text-cyan-700 hover:text-cyan-500"
-              :title="t('toggle_language')"
-            >
-              <i
-                class="iconify"
-                :data-icon="'ant-design:translation-outlined'"
-              />
-            </a>
-          </li>
-          <li class="cursor-pointer text-2xl">
-            <a
-              href="#"
-              @click="toggleDark()"
-              class="text-cyan-700 hover:text-cyan-500"
-              :title="t('toggle_theme')"
-            >
-              <i class="iconify" :data-icon="'mdi:theme-light-dark'" />
-            </a>
-          </li>
-          <li class="cursor-pointer text-2xl">
-            <a
-              href="https://github.com/alvarosaburido"
-              rel="noreferrer"
-              target="_blank"
-              class="footer-link text-cyan-700 hover:text-cyan-500"
-              title="Github repo"
-            >
-              <i class="iconify" :data-icon="'mdi:github'" />
-            </a>
-          </li>
-        </ul>
-
-        <span class="text-xs"
-          >{{ t('made_by') }}
-          <a
-            class="footer-link text-cyan-400 hover:text-cyan-500"
-            href="https://github.com/alvarosaburido"
-            rel="noreferrer"
-            target="_blank"
-            >Alvaro Saburido</a
-          ></span
-        >
-      </footer>
+      <Footer />
     </div>
   </div>
 </template>
-
-<style>
-a,
-.footer-link {
-  @apply transition-all ease-out duration-100;
-}
-
-.footer-link {
-  opacity: 0.8;
-}
-</style>

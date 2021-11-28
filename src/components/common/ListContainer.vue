@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue';
 import { Icon } from '@iconify/vue';
 import Button from '/@/components/common/Button.vue';
-import BlockCard from '/@/components/common/BlockCard.vue';
+import BlockCard from '/@/components/common/CardItem.vue';
 import { useColors } from '/@/composables/useColors';
 
 export default defineComponent({
@@ -60,7 +60,7 @@ export default defineComponent({
           color="grey-light"
           :font-bold="false"
           class="w-48 text-grey-dark hover:text-grey-light"
-          @click.native="$emit('onCreateNewClick', list._id)"
+          @click.native="$emit('onCreateNewClick', list.id)"
         >
           <Icon
             icon="akar-icons:plus"
