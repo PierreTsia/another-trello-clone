@@ -32,10 +32,10 @@ export default defineComponent({
     CreateCardInput,
     ListEditor,
   },
-  setup(_, { emit }) {
+  setup() {
     const boardsStore = useBoards();
-    const { currentBoard } = storeToRefs(boardsStore);
-    const { fetchBoard, fetchBoardLists, createList, archiveList } =
+    const { currentBoard, cardsByListId } = storeToRefs(boardsStore);
+    const { fetchBoard, fetchBoardLists, createList, archiveList, createCard } =
       boardsStore;
 
     const draftList = ref<{ board: number; name: string } | null>(null);
@@ -48,7 +48,7 @@ export default defineComponent({
 
     const { openModal, closeModal } = useModal();
 
-    const draftBlock = ref<{ listId: number; label: string } | null>(null);
+    const draftCard = ref<{ listId: number; name: string } | null>(null);
 
     const openEditBlockModal = (card: any) => {
       openModal(ModalName.EditBlock, {
@@ -61,23 +61,31 @@ export default defineComponent({
     };
 
     const isEditMode = (listId?: number): boolean => {
-      return !!(draftBlock.value && draftBlock.value?.listId === listId);
+      return !!(draftCard.value && draftCard.value?.listId === listId);
     };
 
     const insertBlock = () => {
-      if (!draftBlock.value) return;
-      draftBlock.value = null;
+      if (!draftCard.value) return;
+      draftCard.value = null;
     };
 
     const canValidate = (listId: number) => {
-      return !!(isEditMode(listId) && draftBlock.value?.label?.length);
+      return !!(isEditMode(listId) && draftCard.value?.name?.length);
     };
-    const createDraftBlock = (listId: number) => {};
+    const createDraftCard = (listId: number) => {
+      draftCard.value = { listId, name: '' };
+    };
 
-    const editDraftBlock = (content: string) => {
-      if (draftBlock.value) {
-        draftBlock.value.label = content;
+    const editDraftCard = (content: string) => {
+      if (draftCard.value) {
+        draftCard.value.name = content;
       }
+    };
+
+    const validateDraftCard = async (listId: number) => {
+      if (!draftCard.value?.name?.length) return;
+      await createCard(listId, draftCard.value?.name);
+      draftCard.value = null;
     };
 
     const validateDraftList = async () => {
@@ -126,11 +134,11 @@ export default defineComponent({
       isListEdited,
       colorName,
       colorValues,
-      draftBlock,
+      draftCard,
       draftList,
-      createDraftBlock,
+      createDraftCard,
       isEditMode,
-      editDraftBlock,
+      editDraftCard,
       canValidate,
       insertBlock,
       openEditBlockModal,
@@ -138,6 +146,8 @@ export default defineComponent({
       validateDraftList,
       onInputListChange,
       handleArchiveClick,
+      validateDraftCard,
+      cardsByListId,
     };
   },
 });
@@ -156,9 +166,9 @@ export default defineComponent({
         :key="list.id"
         :is-edit-mode="isEditMode(list.id)"
         :can-validate="canValidate(list.id)"
-        @onCreateNewClick="createDraftBlock"
-        @onCancel="draftBlock = null"
-        @onValidate="insertBlock"
+        @onCreateNewClick="createDraftCard"
+        @onCancel="draftCard = null"
+        @onValidate="validateDraftCard(list.id)"
       >
         <template v-slot:header>
           <h3 class="text-sm font-bold">{{ list.name }}</h3>
@@ -182,14 +192,14 @@ export default defineComponent({
 
         <template v-slot:blocks>
           <CardItem
-            v-for="(card, cardIndex) in list.cards"
+            v-for="(card, cardIndex) in cardsByListId(list.id)"
             :card="card"
             :key="`card__${cardIndex}`"
             @click.native="openEditBlockModal(card)"
           />
           <CreateCardInput
             v-if="isEditMode(list.id)"
-            @onChange="editDraftBlock"
+            @onChange="editDraftCard"
           />
         </template>
       </ListContainer>

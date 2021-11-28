@@ -1,5 +1,6 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { stringToDate, stringToNum } from '../helpers/index.helpers';
+import { CardDto } from '/@/dtos/card.dto';
 
 export class ListDto {
   @Expose()
@@ -32,7 +33,8 @@ export class ListDto {
   boardId?: number;
 
   @Expose()
-  cards!: any[];
+  @Type(() => CardDto)
+  cards?: CardDto[] = [];
 
   @Expose()
   archived!: boolean;
@@ -46,6 +48,7 @@ export class CreateListDto {
   description?: string;
 
   @Expose()
+  @Transform(stringToNum)
   index!: number;
 
   @Expose()

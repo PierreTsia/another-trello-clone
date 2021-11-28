@@ -2,6 +2,7 @@ import { BoardDto, CreateBoardDto } from '/@/dtos/board.dto';
 import { HttpClient } from '/@/api/http.client';
 import { plainToClass } from 'class-transformer';
 import { ListDto, CreateListDto } from '/@/dtos/list.dto';
+import { CardDto, CreateCardDto } from '/@/dtos/card.dto';
 
 interface IBoardService {
   getBoard: (id: number) => Promise<BoardDto>;
@@ -74,4 +75,11 @@ export class BoardService extends HttpClient implements IBoardService {
     });
     return !!res;
   };
+
+  public createCard = async (payload: CreateCardDto) => {
+    const res = await this.instance.post<CardDto>(`/cards`, payload);
+
+    return plainToClass(CardDto, res, { excludeExtraneousValues: true });
+  };
+
 }

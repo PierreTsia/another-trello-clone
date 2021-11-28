@@ -1,9 +1,12 @@
 import { Expose, Transform } from 'class-transformer';
 import { stringToDate, stringToNum } from '../helpers/index.helpers';
 
-export class Card {
+export class CardDto {
   @Expose()
   id!: number;
+
+  @Expose()
+  archived!: boolean;
 
   @Expose()
   name!: string;
@@ -28,9 +31,21 @@ export class Card {
   updated_at!: Date;
 
   @Expose({ name: 'board' })
-  @Transform(({ value }) => value.id)
-  boardId!: number;
+  @Transform(({ value }) => value?.id)
+  boardId?: number;
+}
+
+export class CreateCardDto {
+  @Expose()
+  name!: string;
 
   @Expose()
-  cards!: any[];
+  list!: number;
+
+  @Expose()
+  description?: string;
+
+  @Expose()
+  @Transform(stringToNum)
+  index!: number;
 }
