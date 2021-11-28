@@ -5,8 +5,6 @@ import { plainToClass } from 'class-transformer';
 import { CreateListDto, ListDto } from '/@/dtos/list.dto';
 import { CardDto, CreateCardDto } from '/@/dtos/card.dto';
 
-import { sortByIndex } from '/@/helpers/index.helpers';
-
 interface BoardState {
   boards: BoardDto[];
   board: BoardDto | null;
@@ -32,10 +30,8 @@ export const useBoards = defineStore('boards', {
     currentBoard: (state: BoardState): BoardDto | null => state.board,
     cardsByListId:
       (state: BoardState) =>
-      (listId: number): CardDto[] | null =>
-        state.cardsByList.get(listId)
-          ? sortByIndex(state.cardsByList.get(listId))
-          : [],
+      (listId: number): CardDto[] =>
+        state.cardsByList.get(listId) ?? [],
   },
 
   actions: {
