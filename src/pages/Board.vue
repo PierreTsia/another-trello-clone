@@ -49,7 +49,7 @@ export default defineComponent({
       canValidate,
       isEditMode,
       validateDraftCard,
-      deleteCard
+      deleteCard,
     } = useCards();
 
     const {
@@ -94,7 +94,7 @@ export default defineComponent({
       handleArchiveClick,
       validateDraftCard,
       cardsByListId,
-      deleteCard
+      deleteCard,
     };
   },
 });
@@ -105,7 +105,7 @@ export default defineComponent({
     <div
       id="board-container"
       v-if="currentBoard"
-      class="h-full flex px-4 pb-8 items-start overflow-x-scroll relative"
+      class="h-full flex px-4 pb-8 items-start overflow-x-scroll"
     >
       <ListContainer
         v-for="list in currentBoard.lists"
@@ -116,6 +116,7 @@ export default defineComponent({
         @onCreateNewClick="createDraftCard"
         @onCancel="draftCard = null"
         @onValidate="validateDraftCard(list.id)"
+        class="min-w-64"
       >
         <template v-slot:header>
           <h3 class="text-sm font-bold">{{ list.name }}</h3>
@@ -158,7 +159,9 @@ export default defineComponent({
         class="h-9 mr-2 mb-2 md:mb-0"
       >
         <Icon icon="akar-icons:plus" class="mr-1" :color="colorValues.white" />
-        <h3 class="text-white text-sm font-bold text-center px-2">
+        <h3
+          class="text-white text-sm font-bold text-center px-2 whitespace-nowrap"
+        >
           Ajouter une autre liste
         </h3>
       </Button>
@@ -169,6 +172,7 @@ export default defineComponent({
         @onCancel="draftList = null"
         @onValidate="validateDraftList"
         @onChange="onInputListChange"
+        class="min-w-64"
       />
     </div>
   </Dashboard>

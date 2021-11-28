@@ -28,7 +28,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="!z-0 flex justify-between items-start group animate-animated animate-faster bg-white p-2 rounded mt-1 border-b border-grey cursor-pointer text-sm text-grey-darker hover:bg-grey-lighter"
+    class="flex justify-between items-start group animate-animated animate-faster bg-white p-2 rounded mt-1 border-b border-grey cursor-pointer text-sm text-grey-darker hover:bg-grey-lighter"
     :class="{
       'animate-slideInLeft': animateDirection === 'left',
       'animate-slideInUp': animateDirection === 'up',

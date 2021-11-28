@@ -29,15 +29,7 @@ export default defineComponent({
 </script>
 <template>
   <div
-    class="
-      min-h-screen
-      w-full
-      flex
-      items-center
-      justify-center
-      bg-indigo-50
-      dark:bg-gray-900
-    "
+    class="min-h-screen w-full flex items-center justify-center bg-indigo-50 dark:bg-gray-900"
   >
     <div class="container min-h-screen flex flex-col justify-around mx-auto">
       <div class="mb-8 h-78 flex items-center flex-1">

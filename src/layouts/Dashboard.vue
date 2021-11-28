@@ -29,5 +29,7 @@ export default defineComponent({
     </div>
 
     <Modal v-show="isOpened" />
+    <!-- Todo QUICK CARD EDITOR    -->
+    <!-- Todo TOAST    -->
   </div>
 </template>

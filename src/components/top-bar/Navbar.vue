@@ -75,8 +75,13 @@ export default defineComponent({
 
     <div class="mx-0 md:mx-auto">
       <h1 class="hero-text">
-        <Icon icon="bx:bxl-trello" color="#BCDEFA" height="28" class="mr-2" />
-        Another Trello Clone
+        <Icon
+          icon="bx:bxl-trello"
+          color="#BCDEFA"
+          height="28"
+          class="mr-2"
+        />
+        <span class="hidden lg:block">Another Trello Clone</span>
       </h1>
     </div>
     <div class="flex items-center ml-auto">
@@ -109,6 +114,6 @@ export default defineComponent({
 
 <style>
 .hero-text {
-  @apply text-blue-lighter text-lg  flex  items-center  font-sans  italic  font-black;
+  @apply text-blue-lighter lg:text-lg  flex  items-center  font-sans  italic  font-black;
 }
 </style>
