@@ -1,12 +1,14 @@
 import { BoardDto, CreateBoardDto } from '/@/dtos/board.dto';
 import { HttpClient } from '/@/api/http.client';
 import { plainToClass } from 'class-transformer';
-import { ListDto } from '/@/dtos/list.dto';
+import { ListDto, CreateListDto } from '/@/dtos/list.dto';
 
 interface IBoardService {
   getBoard: (id: number) => Promise<BoardDto>;
   getBoards: () => Promise<BoardDto[]>;
   getListsByBoardId: (boardId: number) => Promise<ListDto[]>;
+  createList: (payload: CreateListDto) => Promise<ListDto>;
+  archiveList: (listId: number) => Promise<boolean>;
 }
 
 export class BoardService extends HttpClient implements IBoardService {
@@ -38,7 +40,7 @@ export class BoardService extends HttpClient implements IBoardService {
 
   public getListsByBoardId = async (id: number) => {
     const res = (await this.instance.get<any>(`/lists`, {
-      params: { board: id },
+      params: { board: id, archived: false },
     })) as any;
 
     return (res ?? []).map((l: any) =>
@@ -58,5 +60,18 @@ export class BoardService extends HttpClient implements IBoardService {
     );
 
     return plainToClass(BoardDto, res, { excludeExtraneousValues: true });
+  };
+
+  public createList = async (payload: CreateListDto) => {
+    const res = await this.instance.post<ListDto>(`/lists`, payload);
+
+    return plainToClass(ListDto, res, { excludeExtraneousValues: true });
+  };
+
+  public archiveList = async (id: number) => {
+    const res = await this.instance.put<ListDto>(`/lists/${id}`, {
+      archived: true,
+    });
+    return !!res;
   };
 }

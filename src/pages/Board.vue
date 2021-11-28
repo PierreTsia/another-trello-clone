@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onBeforeMount, ref } from 'vue';
+import { computed, defineComponent, onBeforeMount, ref } from 'vue';
 
 import Dashboard from '/@/layouts/Dashboard.vue';
 import ListContainer from '/@/components/common/ListContainer.vue';
@@ -9,6 +9,7 @@ import ContextualMenu from '/@/components/common/ContextualMenu.vue';
 import Button from '/@/components/common/Button.vue';
 import CardItem from '/@/components/common/CardItem.vue';
 import CreateCardInput from '/@/components/CreateCardInput.vue';
+import ListEditor from '/@/components/ListEditor.vue';
 import { Icon } from '@iconify/vue';
 import { useBoards } from '/@/store/boards.store';
 import { useAuth } from '/@/store/auth.store';
@@ -29,10 +30,15 @@ export default defineComponent({
     ContextualMenu,
     CardItem,
     CreateCardInput,
+    ListEditor,
   },
-  setup() {
+  setup(_, { emit }) {
     const boardsStore = useBoards();
-    const { fetchBoard, fetchBoardLists } = boardsStore;
+    const { currentBoard } = storeToRefs(boardsStore);
+    const { fetchBoard, fetchBoardLists, createList, archiveList } =
+      boardsStore;
+
+    const draftList = ref<{ board: number; name: string } | null>(null);
 
     const authStore = useAuth();
     const { getCurrentUser } = authStore;
@@ -42,11 +48,12 @@ export default defineComponent({
 
     const { openModal, closeModal } = useModal();
 
-    const openEditBlockModal = (block: any) => {
+    const draftBlock = ref<{ listId: number; label: string } | null>(null);
+
+    const openEditBlockModal = (card: any) => {
       openModal(ModalName.EditBlock, {
-        payload: block,
+        payload: card,
         onConfirm: () => {
-          console.log('coucou');
           closeModal();
         },
         onCancel: closeModal,
@@ -65,7 +72,6 @@ export default defineComponent({
     const canValidate = (listId: number) => {
       return !!(isEditMode(listId) && draftBlock.value?.label?.length);
     };
-    const draftBlock = ref<{ listId: number; label: string } | null>(null);
     const createDraftBlock = (listId: number) => {};
 
     const editDraftBlock = (content: string) => {
@@ -74,41 +80,64 @@ export default defineComponent({
       }
     };
 
+    const validateDraftList = async () => {
+      if (!draftList.value) return;
+      const highestListIndex =
+        currentBoard.value?.lists.reduce(
+          (acc, list) => (list.index > acc ? list.index : acc),
+          0,
+        ) ?? 0;
+      await createList({
+        ...draftList.value,
+        index: highestListIndex + 1_000_000,
+        description: '',
+      });
+      draftList.value = null;
+    };
+
+    const onInputListChange = (content: string) => {
+      if (draftList.value) {
+        draftList.value.name = content;
+      }
+    };
+    const onCreateNewList = () => {
+      draftList.value = {
+        board: currentBoard.value?.id!,
+        name: '',
+      };
+    };
+
+    const isListEdited = computed(() => {
+      return !!draftList.value;
+    });
+
+    const handleArchiveClick = async (listId: number) => {
+      await archiveList(listId);
+    };
+
     onBeforeMount(async () => {
       fetchBoard(+route.params.id);
       fetchBoardLists(+route.params.id);
       getCurrentUser();
     });
 
-    const listMenuItems = [
-      {
-        label: 'Add List',
-        handler: () => {
-          console.log('Add List');
-        },
-      },
-      {
-        label: 'Archive',
-        handler: () => {
-          console.log('Archive');
-        },
-      },
-    ];
-
-    const { board } = storeToRefs(boardsStore);
-
     return {
-      board,
+      currentBoard,
+      isListEdited,
       colorName,
       colorValues,
-      listMenuItems,
       draftBlock,
+      draftList,
       createDraftBlock,
       isEditMode,
       editDraftBlock,
       canValidate,
       insertBlock,
       openEditBlockModal,
+      onCreateNewList,
+      validateDraftList,
+      onInputListChange,
+      handleArchiveClick,
     };
   },
 });
@@ -118,11 +147,11 @@ export default defineComponent({
   <Dashboard>
     <div
       id="board-container"
-      v-if="board"
+      v-if="currentBoard"
       class="h-full flex px-4 pb-8 items-start overflow-x-scroll"
     >
       <ListContainer
-        v-for="list in board.lists"
+        v-for="list in currentBoard.lists"
         :list="list"
         :key="list.id"
         :is-edit-mode="isEditMode(list.id)"
@@ -144,7 +173,7 @@ export default defineComponent({
               /></Button>
             </template>
             <template v-slot:content>
-              <ContextualMenu :items="listMenuItems">
+              <ContextualMenu @onArchiveClick="handleArchiveClick(list.id)">
                 <template v-slot:menu-top-bar> Header </template>
               </ContextualMenu>
             </template>
@@ -164,6 +193,25 @@ export default defineComponent({
           />
         </template>
       </ListContainer>
+      <Button
+        v-if="!isListEdited"
+        color="blue-light"
+        @click="onCreateNewList"
+        class="h-9 mr-2 mb-2 md:mb-0"
+      >
+        <Icon icon="akar-icons:plus" class="mr-1" :color="colorValues.white" />
+        <h3 class="text-white text-sm font-bold text-center px-2">
+          Ajouter une autre liste
+        </h3>
+      </Button>
+
+      <ListEditor
+        v-else
+        :list="draftList"
+        @onCancel="draftList = null"
+        @onValidate="validateDraftList"
+        @onChange="onInputListChange"
+      />
     </div>
   </Dashboard>
 </template>

@@ -28,9 +28,26 @@ export class ListDto {
   updated_at!: Date;
 
   @Expose({ name: 'board' })
-  @Transform(({ value }) => value.id)
-  boardId!: number;
+  @Transform(({ value }) => value?.id)
+  boardId?: number;
 
   @Expose()
   cards!: any[];
+
+  @Expose()
+  archived!: boolean;
+}
+
+export class CreateListDto {
+  @Expose()
+  name!: string;
+
+  @Expose()
+  description?: string;
+
+  @Expose()
+  index!: number;
+
+  @Expose()
+  board!: number;
 }

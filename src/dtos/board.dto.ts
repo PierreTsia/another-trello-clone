@@ -27,7 +27,7 @@ export class BoardDto {
 
   @Expose({ name: 'users_permissions_user' })
   @Type(() => UserDto)
-  owner!: UserDto;
+  owner?: UserDto;
 
   @Expose()
   @Type(() => ListDto)

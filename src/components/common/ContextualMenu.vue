@@ -1,14 +1,27 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-interface MenuItem {
-  label: string;
-  handler?: () => any;
-}
-
 export default defineComponent({
   name: 'ContextualMenu',
-  props: { items: { type: Object, default: () => [] as MenuItem[] } },
+  emits: ['onArchiveClick'],
+  setup(_, { emit }) {
+    const items = [
+      {
+        label: 'Add List',
+        handler: () => {
+          console.log('Add List');
+        },
+      },
+      {
+        label: 'Archive',
+        handler: () => {
+          emit('onArchiveClick');
+        },
+      },
+    ];
+
+    return { items };
+  },
 });
 </script>
 
@@ -20,19 +33,7 @@ export default defineComponent({
     <li
       v-for="(item, i) in items"
       :key="i"
-      class="
-        cursor-pointer
-        text-sm
-        py-2
-        px-4
-        font-normal
-        block
-        hover:bg-grey-light
-        w-full
-        whitespace-nowrap
-        bg-transparent
-        text-blueGray-700
-      "
+      class="cursor-pointer text-sm py-2 px-4 font-normal block hover:bg-grey-light w-full whitespace-nowrap bg-transparent text-blueGray-700"
       @click="item.handler"
     >
       {{ item.label }}
