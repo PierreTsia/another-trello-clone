@@ -5,6 +5,12 @@ import { onClickOutside } from '@vueuse/core';
 
 export default defineComponent({
   name: 'DropDown',
+  props: {
+    widthClass: {
+      type: String,
+      default: 'w-64',
+    },
+  },
   setup() {
     const dropdownRef = ref({} as HTMLElement);
     const activatorRef = ref({} as HTMLElement);
@@ -42,12 +48,8 @@ export default defineComponent({
         <slot name="activator" />
       </div>
       <div
-        :class="!isVisible ? 'hidden' : 'block'"
-        class="
-          animate-animated animate-faster animate-zoomIn
-          drop-down-container
-          w-64
-        "
+        :class="[!isVisible ? 'hidden' : 'block']"
+        class="relative animate-animated animate-faster animate-zoomIn drop-down-container !z-10 !left-10 !-top-8"
         ref="dropdownRef"
       >
         <slot name="content" />
@@ -58,6 +60,6 @@ export default defineComponent({
 
 <style>
 .drop-down-container {
-  @apply bg-white  z-50  text-base  list-none  text-left  rounded  shadow-lg  mt-1;
+  @apply relative bg-white text-base list-none  text-left  rounded  shadow-lg  mt-1;
 }
 </style>

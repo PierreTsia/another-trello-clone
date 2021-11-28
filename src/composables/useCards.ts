@@ -12,7 +12,7 @@ export interface CreateCardComposition {
 
 type DraftCard = { listId: number; name: string };
 
-export function useCreateCards(): CreateCardComposition {
+function useCreateCards(): CreateCardComposition {
   const draftCard = ref<DraftCard | null>(null);
 
   const { createCard } = useBoards();
@@ -48,5 +48,24 @@ export function useCreateCards(): CreateCardComposition {
     validateDraftCard,
     editDraftCard,
     createDraftCard,
+  };
+}
+
+interface DeleteCardComposition {
+  deleteCard: (cardId: number, listId: number) => Promise<void>;
+}
+
+export function useDeleteCard(): DeleteCardComposition {
+  const { deleteCard } = useBoards();
+
+  return {
+    deleteCard,
+  };
+}
+
+export function useCards() {
+  return {
+    ...useDeleteCard(),
+    ...useCreateCards(),
   };
 }

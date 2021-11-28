@@ -15,7 +15,7 @@ import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useColors } from '/@/composables/useColors';
 import { useModal, ModalName } from '/@/store/modal.store';
-import { useCreateCards } from '/@/composables/useCreateCard';
+import { useCards } from '/@/composables/useCards';
 import { useCreateList } from '/@/composables/useCreateList';
 
 export default defineComponent({
@@ -49,7 +49,8 @@ export default defineComponent({
       canValidate,
       isEditMode,
       validateDraftCard,
-    } = useCreateCards();
+      deleteCard
+    } = useCards();
 
     const {
       draftList,
@@ -59,8 +60,6 @@ export default defineComponent({
       isListEdited,
       handleArchiveClick,
     } = useCreateList();
-
-
 
     const openEditBlockModal = (card: any) => {
       openModal(ModalName.EditBlock, {
@@ -95,6 +94,7 @@ export default defineComponent({
       handleArchiveClick,
       validateDraftCard,
       cardsByListId,
+      deleteCard
     };
   },
 });
@@ -105,7 +105,7 @@ export default defineComponent({
     <div
       id="board-container"
       v-if="currentBoard"
-      class="h-full flex px-4 pb-8 items-start overflow-x-scroll"
+      class="h-full flex px-4 pb-8 items-start overflow-x-scroll relative"
     >
       <ListContainer
         v-for="list in currentBoard.lists"
@@ -120,7 +120,7 @@ export default defineComponent({
         <template v-slot:header>
           <h3 class="text-sm font-bold">{{ list.name }}</h3>
 
-          <DropDown ref="dropDownRef">
+          <DropDown ref="" class="relative">
             <template v-slot:activator>
               <Button :color="colorName.GreyLight" class="w-6 h-6" is-small>
                 <Icon
@@ -142,7 +142,8 @@ export default defineComponent({
             v-for="(card, cardIndex) in cardsByListId(list.id)"
             :card="card"
             :key="`card__${cardIndex}`"
-            @click.native="openEditBlockModal(card)"
+            @onEditClick="openEditBlockModal(card)"
+            @onDeleteClick="deleteCard(card.id, list.id)"
           />
           <CreateCardInput
             v-if="isEditMode(list.id)"

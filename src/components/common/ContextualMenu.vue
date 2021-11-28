@@ -26,19 +26,21 @@ export default defineComponent({
 </script>
 
 <template>
-  <h3 class="header">
-    <slot name="menu-top-bar" />
-  </h3>
-  <ul>
-    <li
-      v-for="(item, i) in items"
-      :key="i"
-      class="cursor-pointer text-sm py-2 px-4 font-normal block hover:bg-grey-light w-full whitespace-nowrap bg-transparent text-blueGray-700"
-      @click="item.handler"
-    >
-      {{ item.label }}
-    </li>
-  </ul>
+  <div class="w-64">
+    <h3 class="header">
+      <slot name="menu-top-bar" />
+    </h3>
+    <ul>
+      <li
+        v-for="(item, i) in items"
+        :key="i"
+        class="cursor-pointer text-sm py-2 px-4 font-normal block hover:bg-grey-light w-full whitespace-nowrap bg-transparent text-blueGray-700"
+        @click="item.handler"
+      >
+        {{ item.label }}
+      </li>
+    </ul>
+  </div>
 </template>
 <style scoped>
 .header {

@@ -10,6 +10,8 @@ interface IBoardService {
   getListsByBoardId: (boardId: number) => Promise<ListDto[]>;
   createList: (payload: CreateListDto) => Promise<ListDto>;
   archiveList: (listId: number) => Promise<boolean>;
+  createCard: (payload: CreateCardDto) => Promise<CardDto>;
+  deleteCard: (cardId: number) => Promise<boolean>;
 }
 
 export class BoardService extends HttpClient implements IBoardService {
@@ -82,4 +84,9 @@ export class BoardService extends HttpClient implements IBoardService {
     return plainToClass(CardDto, res, { excludeExtraneousValues: true });
   };
 
+  public deleteCard = async (id: number) => {
+    const res = await this.instance.delete<CardDto>(`/cards/${id}`);
+
+    return !!res;
+  };
 }

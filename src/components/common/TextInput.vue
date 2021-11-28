@@ -44,7 +44,6 @@ export default defineComponent({
   <div class="relative flex w-full flex-wrap items-stretch">
     <span
       class="
-        z-10
         h-full
         leading-snug
         font-normal

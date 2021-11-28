@@ -17,6 +17,9 @@ type CreateListPayload = {
   description: string;
   index: number;
 };
+
+const api = BoardService.getInstance();
+
 export const useBoards = defineStore('boards', {
   state: (): BoardState => {
     return {
@@ -36,15 +39,12 @@ export const useBoards = defineStore('boards', {
 
   actions: {
     async fetchBoards() {
-      const api = BoardService.getInstance();
       this.boards = await api.getBoards();
     },
     async fetchBoard(boardId: number) {
-      const api = BoardService.getInstance();
       this.board = await api.getBoard(boardId);
     },
     async fetchBoardLists(boardId: number) {
-      const api = BoardService.getInstance();
       const lists = await api.getListsByBoardId(boardId);
       lists.forEach((list: ListDto) => {
         this.cardsByList.set(
@@ -58,14 +58,12 @@ export const useBoards = defineStore('boards', {
     },
 
     async createBoard(boardName: string, userId: number) {
-      const api = BoardService.getInstance();
       const board = await api.createBoard(boardName, userId);
       this.boards.push(board);
     },
 
     async createList(payload: CreateListPayload) {
       const api = BoardService.getInstance();
-
       const res = await api.createList(
         plainToClass(CreateListDto, payload, { excludeExtraneousValues: true }),
       );
@@ -78,7 +76,6 @@ export const useBoards = defineStore('boards', {
     },
 
     async archiveList(listId: number) {
-      const api = BoardService.getInstance();
       const success = await api.archiveList(listId);
       if (success && this.board?.lists) {
         this.board.lists = this.board?.lists.filter(list => list.id !== listId);
@@ -86,8 +83,6 @@ export const useBoards = defineStore('boards', {
     },
 
     async createCard(listId: number, cardName: string) {
-      const api = BoardService.getInstance();
-
       const allCards = this.cardsByListId(listId);
       const highestIndex =
         allCards?.reduce((acc, curr) => Math.max(acc, curr.index), 0) ?? 0;
@@ -98,12 +93,28 @@ export const useBoards = defineStore('boards', {
         index: highestIndex + 1000000,
       });
       const res = await api.createCard(payload);
+      const newCard = plainToClass(CardDto, res, {
+        excludeExtraneousValues: true,
+      });
 
       if (this.cardsByList.get(listId)) {
         this.cardsByList.set(listId, [
-          plainToClass(CardDto, res, { excludeExtraneousValues: true }),
           ...this.cardsByList.get(listId)!,
+          newCard,
         ]);
+      } else {
+        this.cardsByList.set(listId, [newCard]);
+      }
+    },
+
+    async deleteCard(cardId: number, listId: number) {
+      const success = await api.deleteCard(cardId);
+      if (success) {
+        this.cardsByList.set(
+          listId,
+          this.cardsByList.get(listId)?.filter(card => card.id !== cardId) ??
+            [],
+        );
       }
     },
   },
