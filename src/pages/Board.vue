@@ -1,6 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, ref } from 'vue';
-
+import { defineComponent, onBeforeMount } from 'vue';
 import Dashboard from '/@/layouts/Dashboard.vue';
 import ListContainer from '/@/components/common/ListContainer.vue';
 import TextInput from '/@/components/common/TextInput.vue';
@@ -12,11 +11,12 @@ import CreateCardInput from '/@/components/CreateCardInput.vue';
 import ListEditor from '/@/components/ListEditor.vue';
 import { Icon } from '@iconify/vue';
 import { useBoards } from '/@/store/boards.store';
-import { useAuth } from '/@/store/auth.store';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useColors } from '/@/composables/useColors';
 import { useModal, ModalName } from '/@/store/modal.store';
+import { useCreateCards } from '/@/composables/useCreateCard';
+import { useCreateList } from '/@/composables/useCreateList';
 
 export default defineComponent({
   name: 'Board',
@@ -33,22 +33,34 @@ export default defineComponent({
     ListEditor,
   },
   setup() {
+    const route = useRoute();
     const boardsStore = useBoards();
     const { currentBoard, cardsByListId } = storeToRefs(boardsStore);
-    const { fetchBoard, fetchBoardLists, createList, archiveList, createCard } =
-      boardsStore;
+    const { fetchBoard, fetchBoardLists } = boardsStore;
 
-    const draftList = ref<{ board: number; name: string } | null>(null);
-
-    const authStore = useAuth();
-    const { getCurrentUser } = authStore;
-
-    const route = useRoute();
     const { colorValues, colorName } = useColors();
 
     const { openModal, closeModal } = useModal();
 
-    const draftCard = ref<{ listId: number; name: string } | null>(null);
+    const {
+      draftCard,
+      editDraftCard,
+      createDraftCard,
+      canValidate,
+      isEditMode,
+      validateDraftCard,
+    } = useCreateCards();
+
+    const {
+      draftList,
+      validateDraftList,
+      onInputListChange,
+      onCreateNewList,
+      isListEdited,
+      handleArchiveClick,
+    } = useCreateList();
+
+
 
     const openEditBlockModal = (card: any) => {
       openModal(ModalName.EditBlock, {
@@ -60,73 +72,9 @@ export default defineComponent({
       });
     };
 
-    const isEditMode = (listId?: number): boolean => {
-      return !!(draftCard.value && draftCard.value?.listId === listId);
-    };
-
-    const insertBlock = () => {
-      if (!draftCard.value) return;
-      draftCard.value = null;
-    };
-
-    const canValidate = (listId: number) => {
-      return !!(isEditMode(listId) && draftCard.value?.name?.length);
-    };
-    const createDraftCard = (listId: number) => {
-      draftCard.value = { listId, name: '' };
-    };
-
-    const editDraftCard = (content: string) => {
-      if (draftCard.value) {
-        draftCard.value.name = content;
-      }
-    };
-
-    const validateDraftCard = async (listId: number) => {
-      if (!draftCard.value?.name?.length) return;
-      await createCard(listId, draftCard.value?.name);
-      draftCard.value = null;
-    };
-
-    const validateDraftList = async () => {
-      if (!draftList.value) return;
-      const highestListIndex =
-        currentBoard.value?.lists.reduce(
-          (acc, list) => (list.index > acc ? list.index : acc),
-          0,
-        ) ?? 0;
-      await createList({
-        ...draftList.value,
-        index: highestListIndex + 1_000_000,
-        description: '',
-      });
-      draftList.value = null;
-    };
-
-    const onInputListChange = (content: string) => {
-      if (draftList.value) {
-        draftList.value.name = content;
-      }
-    };
-    const onCreateNewList = () => {
-      draftList.value = {
-        board: currentBoard.value?.id!,
-        name: '',
-      };
-    };
-
-    const isListEdited = computed(() => {
-      return !!draftList.value;
-    });
-
-    const handleArchiveClick = async (listId: number) => {
-      await archiveList(listId);
-    };
-
     onBeforeMount(async () => {
       fetchBoard(+route.params.id);
       fetchBoardLists(+route.params.id);
-      getCurrentUser();
     });
 
     return {
@@ -140,7 +88,6 @@ export default defineComponent({
       isEditMode,
       editDraftCard,
       canValidate,
-      insertBlock,
       openEditBlockModal,
       onCreateNewList,
       validateDraftList,
