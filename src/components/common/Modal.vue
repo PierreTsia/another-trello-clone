@@ -1,9 +1,8 @@
 <script lang="ts">
-import { defineComponent, watch } from 'vue';
+import { defineComponent } from 'vue';
 import { useModal } from '/@/store/modal.store';
 import { storeToRefs } from 'pinia';
 import EditBlockModal from '/@/components/modals/EditBlockModal.vue';
-import { useMagicKeys } from '@vueuse/core';
 
 export default defineComponent({
   name: 'Modal',
@@ -13,19 +12,6 @@ export default defineComponent({
     const { closeModal } = modalStore;
 
     const { activeModalName, isOpened, modalProps } = storeToRefs(modalStore);
-
-    const { backspace, enter } = useMagicKeys();
-
-    watch(backspace, () => {
-      if (isOpened.value) {
-        modalProps.value?.onCancel();
-      }
-    });
-    watch(enter, () => {
-      if (isOpened.value) {
-        modalProps.value?.onConfirm();
-      }
-    });
 
     return { closeModal, activeModalName, isOpened, modalProps };
   },
@@ -47,10 +33,7 @@ export default defineComponent({
 
       <component
         :is="activeModalName"
-        class="
-          modal-card
-          animate-animated animate-zoomIn animate-delay-100 animate-faster
-        "
+        class="modal-card animate-animated animate-zoomIn animate-delay-100 animate-faster"
         :class="activeModalName"
       />
     </div>

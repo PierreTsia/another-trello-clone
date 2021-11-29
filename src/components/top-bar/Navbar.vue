@@ -4,13 +4,18 @@ import { Icon } from '@iconify/vue';
 import Button from '/@/components/common/Button.vue';
 import TextInput from '/@/components/common/TextInput.vue';
 import { useColors } from '/@/composables/useColors';
+import { useAuth } from '/@/store/auth.store';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
   name: 'Navbar',
   components: { Button, Icon, TextInput },
   setup() {
     const { colorName, colorValues } = useColors();
+    const authStore = useAuth();
+    const { me } = storeToRefs(authStore);
     return {
+      me,
       colorValues,
       colorName,
     };
@@ -75,12 +80,7 @@ export default defineComponent({
 
     <div class="mx-0 md:mx-auto">
       <h1 class="hero-text">
-        <Icon
-          icon="bx:bxl-trello"
-          color="#BCDEFA"
-          height="28"
-          class="mr-2"
-        />
+        <Icon icon="bx:bxl-trello" color="#BCDEFA" height="28" class="mr-2" />
         <span class="hidden lg:block">Another Trello Clone</span>
       </h1>
     </div>
@@ -103,11 +103,7 @@ export default defineComponent({
       <Button :color="colorName.BlueDark" class="mr-2">
         <Icon icon="fa-solid:bell" color="white" height="16" class="mx-auto" />
       </Button>
-      <img
-        src="https://i.imgur.com/OZaT7jl.png"
-        alt="avatar"
-        class="rounded-full w-9"
-      />
+      <img :src="me?.avatar.thumbnail" alt="avatar" class="rounded-full w-8 h-8" />
     </div>
   </nav>
 </template>

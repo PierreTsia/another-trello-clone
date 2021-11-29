@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia';
 import { BoardService } from '/@/api/services/board.service';
-import { BoardDto } from '/@/dtos/board.dto';
+import { BoardDto, UpdateBoardDto } from '/@/dtos/board.dto';
 import { plainToClass } from 'class-transformer';
 import { CreateListDto, ListDto } from '/@/dtos/list.dto';
-import { CardDto, CreateCardDto } from '/@/dtos/card.dto';
+import { CardDto, CreateCardDto, EditCardDto } from '/@/dtos/card.dto';
 
 interface BoardState {
   boards: BoardDto[];
   board: BoardDto | null;
   cardsByList: Map<number, CardDto[] | null>;
+  editedCard: CardDto | null;
 }
 
 type CreateListPayload = {
@@ -26,6 +27,7 @@ export const useBoards = defineStore('boards', {
       board: null,
       boards: [],
       cardsByList: new Map(null),
+      editedCard: null,
     };
   },
 
@@ -41,9 +43,27 @@ export const useBoards = defineStore('boards', {
     async fetchBoards() {
       this.boards = await api.getBoards();
     },
+
+    async fetchUserBoards(userId: number, limit?: number, sort?: string) {
+      this.boards = await api.getUserBoards(userId, {
+        _limit: limit,
+        _sort: sort,
+      });
+    },
+
     async fetchBoard(boardId: number) {
       this.board = await api.getBoard(boardId);
     },
+
+    async updateBoard(boardId: number, payload: any) {
+      this.board = await api.updateBoard(
+        boardId,
+        plainToClass(UpdateBoardDto, payload, {
+          excludeExtraneousValues: true,
+        }),
+      );
+    },
+
     async fetchBoardLists(boardId: number) {
       const lists = await api.getListsByBoardId(boardId);
       lists.forEach((list: ListDto) => {
@@ -107,6 +127,10 @@ export const useBoards = defineStore('boards', {
       }
     },
 
+    async fetchCard(cardId: number) {
+      this.editedCard = await api.getCardById(cardId);
+    },
+
     async deleteCard(cardId: number, listId: number) {
       const success = await api.deleteCard(cardId);
       if (success) {
@@ -114,6 +138,22 @@ export const useBoards = defineStore('boards', {
           listId,
           this.cardsByList.get(listId)?.filter(card => card.id !== cardId) ??
             [],
+        );
+      }
+    },
+
+    async editCard(cardId: number, payload: any) {
+      const newCard = await api.editCard(
+        cardId,
+        plainToClass(EditCardDto, payload, { excludeExtraneousValues: true }),
+      );
+      if (newCard) {
+        this.editedCard = newCard;
+        this.cardsByList.set(
+          newCard.list?.id!,
+          this.cardsByList
+            .get(newCard.list?.id!)
+            ?.map(card => (card.id === cardId ? newCard : card)) ?? [],
         );
       }
     },

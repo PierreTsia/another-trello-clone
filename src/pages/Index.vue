@@ -1,6 +1,7 @@
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, onBeforeMount, ref } from 'vue';
 import { useAuth } from '/@/store/auth.store';
+import { useBoards } from '/@/store/boards.store';
 import { storeToRefs } from 'pinia';
 
 import LoginCard from '/@/components/LoginCard.vue';
@@ -16,6 +17,8 @@ export default defineComponent({
   },
   setup() {
     const auth = useAuth();
+    const boardsStore = useBoards();
+    const { boards } = storeToRefs(boardsStore);
     const { isLoggedIn, me } = storeToRefs(auth);
 
     const show = ref(false);
@@ -23,7 +26,13 @@ export default defineComponent({
       show.value = true;
     }, 1000);
 
-    return { show, isLoggedIn, me };
+    onBeforeMount(async () => {
+      if (isLoggedIn.value) {
+        await boardsStore.fetchUserBoards(me.value?.id!, 3);
+      }
+    });
+
+    return { show, isLoggedIn, me, boards };
   },
 });
 </script>

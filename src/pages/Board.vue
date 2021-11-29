@@ -36,7 +36,7 @@ export default defineComponent({
     const route = useRoute();
     const boardsStore = useBoards();
     const { currentBoard, cardsByListId } = storeToRefs(boardsStore);
-    const { fetchBoard, fetchBoardLists } = boardsStore;
+    const { fetchBoard, fetchBoardLists, fetchCard } = boardsStore;
 
     const { colorValues, colorName } = useColors();
 
@@ -61,7 +61,8 @@ export default defineComponent({
       handleArchiveClick,
     } = useCreateList();
 
-    const openEditBlockModal = (card: any) => {
+    const openEditBlockModal = async (card: any) => {
+      await fetchCard(card.id);
       openModal(ModalName.EditBlock, {
         payload: card,
         onConfirm: () => {

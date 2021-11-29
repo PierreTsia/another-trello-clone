@@ -10,6 +10,10 @@ export interface CreateCardComposition {
   validateDraftCard: (listId: number) => Promise<void>;
 }
 
+interface DeleteCardComposition {
+  deleteCard: (cardId: number, listId: number) => Promise<void>;
+}
+
 type DraftCard = { listId: number; name: string };
 
 function useCreateCards(): CreateCardComposition {
@@ -49,10 +53,6 @@ function useCreateCards(): CreateCardComposition {
     editDraftCard,
     createDraftCard,
   };
-}
-
-interface DeleteCardComposition {
-  deleteCard: (cardId: number, listId: number) => Promise<void>;
 }
 
 export function useDeleteCard(): DeleteCardComposition {

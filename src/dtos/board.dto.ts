@@ -32,8 +32,6 @@ export class BoardDto {
   @Expose()
   @Type(() => ListDto)
   lists!: ListDto[];
-
-
 }
 
 export class CreateBoardDto {
@@ -55,4 +53,11 @@ export class CreateBoardDto {
       user: this.user,
     };
   }
+}
+export class UpdateBoardDto {
+  @Expose()
+  name?: string;
+
+  @Expose()
+  description?: number;
 }

@@ -9,6 +9,11 @@ export default defineComponent({
     Icon,
   },
   props: {
+    textValue: {
+      type: String,
+      default: '',
+    },
+
     withIcon: {
       type: Boolean,
       default: true,
@@ -30,11 +35,18 @@ export default defineComponent({
       default: false,
     },
   },
-  setup() {
+  emits: ['onChange'],
+
+  setup(_, { emit }) {
     const colors = ColorName;
+
+    const emitOnChange = (e: any) => {
+      emit('onChange', e?.target?.value);
+    };
 
     return {
       colors,
+      emitOnChange,
     };
   },
 });
@@ -43,28 +55,14 @@ export default defineComponent({
 <template>
   <div class="relative flex w-full flex-wrap items-stretch">
     <span
-      class="
-        h-full
-        leading-snug
-        font-normal
-        text-center
-        absolute
-        bg-transparent
-        rounded
-        text-base
-        items-center
-        justify-center
-        w-6
-        pt-2
-        px-2
-      "
+      class="h-full leading-snug font-normal text-center absolute bg-transparent rounded text-base items-center justify-center w-6 pt-2 px-2"
       :class="{
         'text-grey-dark': textColor === colors.GreyDark,
         'text-white': textColor === colors.White,
       }"
     >
-
       <Icon
+        v-if="withIcon"
         :icon="icon"
         :color="textColor"
         height="10"
@@ -74,20 +72,11 @@ export default defineComponent({
     <input
       type="text"
       :placeholder="placeholder"
-      class="
-        px-1
-        py-1
-        relative
-        bg-transparent
-        rounded
-        text-xs
-        border
-        outline-none
-        focus:outline-none focus:ring
-        w-full
-        pl-6
-      "
+      :value="textValue"
+      @input="emitOnChange($event)"
+      class="px-1 py-1 relative bg-transparent rounded text-xs border outline-none focus:outline-none focus:ring w-full"
       :class="{
+        'pl-6': withIcon,
         'border-grey-dark': textColor === colors.GreyDark,
         'border-white': textColor === colors.White,
         'text-white': textColor === colors.White,
